@@ -167,7 +167,7 @@ sandbox.UI <- function(id) {
                         span(a("FRED",target="_blank",href="https://fred.stlouisfed.org/")),
                         ". Data is currently updated through",
                         span(as.character(format(as.Date(max(fred$date,na.rm=T)),"%B %d, %Y"))),". All code written by Michael Ng, available on",
-                        span(a("Github",target="_blank",href="https://github.com/mjng93/covid_19")),"."
+                        span(a("Github",target="_blank",href="https://github.com/mjng93/Econ-Dashboard")),"."
                       )
                       
                     )

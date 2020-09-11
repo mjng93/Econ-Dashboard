@@ -24,9 +24,9 @@ library(devtools)
 library(tidyquant)
 library(tidyverse)
 
-setwd("C:/Users/micha/Dropbox/Files/Projects")
 
-#test
+
+#test2
 
 #Read in FRED Data
 

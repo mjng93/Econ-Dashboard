@@ -167,16 +167,16 @@ fred$date=as.Date(fred$date)
 
 #Read in Asset Prices
 
-tickers = c("AAPL","NFLX","AMZN","MSFT","GOOG","FB","Z","TSLA","WMT","NKE", "W","CRM","DOCU","DIS","GRUB")
-
-getSymbols(tickers,
-           from = "2000-01-01",
-           to = Sys.Date())
-prices <- map(tickers,function(x) Ad(get(x)))
-prices <- reduce(prices,merge)
-colnames(prices) <- tickers
-prices$date=row.names(prices)
-prices=as.data.frame(prices)
+# tickers = c("AAPL","NFLX","AMZN","MSFT","GOOG","FB","Z","TSLA","WMT","NKE", "W","CRM","DOCU","DIS","GRUB")
+# 
+# getSymbols(tickers,
+#            from = "2000-01-01",
+#            to = Sys.Date())
+# prices <- map(tickers,function(x) Ad(get(x)))
+# prices <- reduce(prices,merge)
+# colnames(prices) <- tickers
+# prices$date=row.names(prices)
+# prices=as.data.frame(prices)
 
 #Zillow Housing Prices : https://www.zillow.com/research/data/; download from this site and save as zvhi_monthyear.csv
 

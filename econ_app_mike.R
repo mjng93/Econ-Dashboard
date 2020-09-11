@@ -18,7 +18,7 @@ library(shinythemes)
 library(shinydashboard)
 
 
-source("econ_module.r", local = TRUE) 
+source("econ_module.R", local = TRUE) 
 
 ui <- shinyUI(
   fluidPage(theme=shinytheme('sandstone'),

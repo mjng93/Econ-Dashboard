@@ -1,0 +1,12 @@
+name: Econ-Dashboard
+title: Econ-Dashboard
+username:
+account: mjng1993
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2792656
+bundleId: 3619917
+url: https://mjng1993.shinyapps.io/Econ-Dashboard/
+when: 1599851087.1345
+asMultiple: FALSE
+asStatic: FALSE

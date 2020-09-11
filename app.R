@@ -1,5 +1,5 @@
-source("econ_data.r", local=T)
-source("econ_module.r", local=T) 
+source("econ_data.R", local=T)
+source("econ_module.R", local=T) 
 
 
 library(rsconnect)

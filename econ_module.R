@@ -11,17 +11,17 @@ library(RColorBrewer)
 library(zoo)
 library(quantmod)
 library(rmarkdown)
-library(TTR)
-library(gridExtra)
-library(grid)
+# library(TTR)
+# library(gridExtra)
+# library(grid)
 library(DT)
-library(kableExtra)
-library(tables)
-library(knitr)
+#library(kableExtra)
+#library(tables)
+#library(knitr)
 library(rsconnect)
 library(plotly)
-library(ggthemes)
-library(stargazer)
+#library(ggthemes)
+#library(stargazer)
 library(data.table)
 
 sandbox.UI <- function(id) {
@@ -56,12 +56,14 @@ sandbox.UI <- function(id) {
                                                             "Other Quarterly Data"=c("Retail Sales - E-commerce",
                                                                     "E-commerce Share of Retail",
                                                                     "Household Debt Service Ratio"),
-                                                            "Employment (M)"=c("Employment Population Ratio (Age 25-54)",
+                                                            "Employment (M & W)"=c("Employment Population Ratio (Age 25-54)",
                                                                               "Labor Force Participation Rate (Age 25-54)",
                                                                               "Unemployment Rate (U-6)",
                                                                               "Unemployment Rate (U-3)",
                                                                               "Job Openings",
-                                                                              "Average Hourly Earnings (Production and Non-Supervisory Workers)"
+                                                                              "Average Hourly Earnings (Production and Non-Supervisory Workers)",
+                                                                              "Unemployment Insurance - Initial Claims",
+                                                                              "Unemployment Insurance - Continued Claims"
                                                                            
                                                                             ),
                                                             "Inflation (M)"=c( "Core PCE Price Index",
@@ -116,6 +118,17 @@ sandbox.UI <- function(id) {
                                                                            "Real Disposable Income",
                                                                            "Real Personal Income",
                                                                            "Real Personal Income (Ex. Transfers)"),
+                                                            "Commercial Bank Assets (H8)"=c("All Commercial Banks - Treasury and Agency Securities",
+                                                                                            "All Commercial Banks - Other Securities",
+                                                                                            "All Commercial Banks - C&I Loans",
+                                                                                            "All Commercial Banks - Real Estate Loans",
+                                                                                            "All Commercial Banks - Consumer Loans",
+                                                                                            "All Commercial Banks - Allother Loans and Leases",
+                                                                                            "All Commercial Banks - Cash Assets",
+                                                                                            "All Commercial Banks - Loans to Commercial Banks",
+                                                                                            "All Commercial Banks - Fed Funds Sold and reverse RPs",
+                                                                                            "All Commercial Banks - Other Assets (including trading)"),
+                   
                                                             "Housing (Q & M)"=c("Rental Vacancy Rate",
                                                                         "Home Vacancy Rate",
                                                                         "Home Ownership Rate",
@@ -131,6 +144,8 @@ sandbox.UI <- function(id) {
                                                                         "Building Permits",
                                                                         "Housing Completions",
                                                                         "Housing Starts"),
+                                                            "Other (W)"=c("NY Fed Weekly Economic Indicator",
+                                                                          "STL Fed Financial Stress Index"),
                                                             "Zillow Home Value Index"=c(colnames(zillow.main)[-1])
                                                             ),
                                              selected = c("Real PCE"),
@@ -330,7 +345,7 @@ sandbox.server <- function(input, output, session,data){
     plot.data=na.omit(plot.data)
     
     if (input$chart_type=="line"){
-      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, colors = c("black","steelblue3","firebrick","chartreuse3","darkgoldenrod3","indianred1","cyan1","aquamarine2","bisque1","dimgrey","darkseagreen1","gold","deeppink","blue",'steelblue3','firebrick3'), type = 'scatter', mode = 'lines') %>%
+      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines') %>%
         layout(title = "Economic Data",
                xaxis = list(title = "Date"),
                yaxis = list (title = unit_input()))

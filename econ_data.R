@@ -8,17 +8,17 @@ library(RColorBrewer)
 library(zoo)
 library(quantmod)
 library(rmarkdown)
-library(TTR)
-library(gridExtra)
-library(grid)
+# library(TTR)
+# library(gridExtra)
+# library(grid)
 library(DT)
-library(kableExtra)
-library(tables)
-library(knitr)
+#library(kableExtra)
+#library(tables)
+#library(knitr)
 library(rsconnect)
 library(plotly)
-library(ggthemes)
-library(stargazer)
+#library(ggthemes)
+#library(stargazer)
 library(fredr)
 library(devtools)
 library(tidyquant)
@@ -38,6 +38,18 @@ unemp=fredr_series_observations(
   frequency = "m",
   units = "chg"
 )
+
+weekly=c("ICSA","CCSA","WEI","STLFSI2",
+         "TASACBW027SBOG",
+         "OSEACBW027SBOG",
+         "TOTCI",
+         "RELACBW027SBOG",
+         "CLSACBW027SBOG",
+         "AOLACBW027SBOG",
+         "CASACBW027SBOG",
+         "H8B3092NCBA",
+         "LCBACBW027SBOG",
+         "H8B3053NCBA")
 
 monthly=c("UNRATE","U6RATE","LNS11300060","LNS12300060","RSXFS","INDPRO","DGORDER","AMDMVS","NEWORDER","ANXAVS","PCEC96","PCEDG","PCENDC96","PCESC96","ALTSALES","WHLSLRIRSA","UMCSENT","HOUST","COMPUTSA","PERMIT","TTLCONS","TLNRESCONS","TLRESCONS","TLPRVCONS","PNRESCONS","PRRESCONS","HSN1F","EXHOSLUSM495S","CSUSHPISA","AHETPI","CPIAUCSL","CPILFESL","PCEPI","PCEPILFE","GEPUCURRENT","RPI","DSPIC96","PSAVERT","W875RX1","JTSJOL",
           "RSAOMV",
@@ -64,8 +76,8 @@ monthly=c("UNRATE","U6RATE","LNS11300060","LNS12300060","RSXFS","INDPRO","DGORDE
 quarterly=c("ECOMSA","ECOMPCTSA","TDSP","GDPC1","A939RX0Q048SBEA","PCEC","GPDIC1","PNFIC1","NETEXC","GCEC1","A825RX1Q020SBEA","OPHNFB","OPHMFG","OPHPBS","RRVRUSQ156N","RHVRUSQ156N","RSAHORUSQ156S","DRSFRMACBS","DRCCLACBS","DRCLACBS","DRBLACBS")
 
 params <- list(
-  series_id = c(monthly,quarterly),
-  frequency = c(rep("m",length(monthly)),rep("q",length(quarterly)))
+  series_id = c(weekly,monthly,quarterly),
+  frequency = c(rep("w",length(weekly)),rep("m",length(monthly)),rep("q",length(quarterly)))
   )
 
 
@@ -75,7 +87,21 @@ fred=as.data.frame(pmap_dfr(
 ))
 
 fred=as.data.frame(dcast(fred,date~series_id))
-fred=rename(fred,c("Real Personal Income (Ex. Transfers)"="W875RX1",
+fred=rename(fred,c("Unemployment Insurance - Initial Claims"="ICSA",
+                   "Unemployment Insurance - Continued Claims"="CCSA",
+                   "NY Fed Weekly Economic Indicator"="WEI",
+                   "STL Fed Financial Stress Index"="STLFSI2",
+                   "All Commercial Banks - Treasury and Agency Securities"="TASACBW027SBOG",
+                   "All Commercial Banks - Other Securities"="OSEACBW027SBOG",
+                   "All Commercial Banks - C&I Loans"="TOTCI",
+                   "All Commercial Banks - Real Estate Loans"="RELACBW027SBOG",
+                   "All Commercial Banks - Consumer Loans"="CLSACBW027SBOG",
+                   "All Commercial Banks - Allother Loans and Leases"="AOLACBW027SBOG",
+                   "All Commercial Banks - Cash Assets"="CASACBW027SBOG",
+                   "All Commercial Banks - Loans to Commercial Banks"="H8B3092NCBA",
+                   "All Commercial Banks - Fed Funds Sold and reverse RPs"="LCBACBW027SBOG",
+                   "All Commercial Banks - Other Assets (including trading)"="H8B3053NCBA",
+                   "Real Personal Income (Ex. Transfers)"="W875RX1",
                    "Retail Sales - E-commerce"="ECOMSA",
                    "E-commerce Share of Retail"="ECOMPCTSA",
                    "Household Debt Service Ratio"="TDSP",
@@ -125,7 +151,7 @@ fred=rename(fred,c("Real Personal Income (Ex. Transfers)"="W875RX1",
                    "Real PCE (Services)"="PCESC96",
                    "Real PCE (Nondurables)"="PCENDC96",
                    "Real PCE (Durables)"="PCEDG",
-                   "Real PCE"="PCEC96",
+                   "Real PCE (OVerall)"="PCEC96",
                    "Capital Goods - Shipments (Nondefense, ex. aircraft)"="ANXAVS",
                    "Capital Goods - New Orders (Nondefense, ex. aircraft)"="NEWORDER",
                    "Durable Goods - Shipments"="AMDMVS",
@@ -180,11 +206,11 @@ fred$date=as.Date(fred$date)
 
 #Zillow Housing Prices : https://www.zillow.com/research/data/; download from this site and save as zvhi_monthyear.csv
 
-zillow=read.csv("zhvi_sept2020.csv",stringsAsFactors = F)
-zillow=subset(zillow,SizeRank<=25)
+zillow=read.csv("zhvi_dec2020.csv",stringsAsFactors = F)
+zillow=subset(zillow,SizeRank<=35)
 zillow=subset(zillow,select=-c(RegionID,RegionType,StateName,SizeRank))
 zillow.long=reshape2::melt(zillow,id.vars=c("RegionName"))
-zillow.long$variable=as.Date(gsub("X","",zillow.long$variable,ignore.case = T),format="%m.%d.%Y")
+zillow.long$variable=as.Date(gsub("X","",zillow.long$variable,ignore.case = T),format="%Y.%m.%d")
 zillow.main=reshape2::dcast(zillow.long,variable~RegionName,value.var="value")
 colnames(zillow.main)[1]="date"
 zillow.main$date=as.Date(as.yearmon(zillow.main$date))

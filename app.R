@@ -10,6 +10,8 @@ ui <- shinyUI(
   fluidPage(theme=shinytheme('sandstone'),
             
             
+            tags$head(includeHTML("google_analytics_econ_biz.html")),
+            
             navbarPage("Economic and Business Data",
                        navbarMenu("Interactive",
                                   sandbox.UI(id="sandbox")

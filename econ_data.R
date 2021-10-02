@@ -51,7 +51,9 @@ weekly=c("ICSA","CCSA","WEI","STLFSI2",
          "LCBACBW027SBOG",
          "H8B3053NCBA")
 
-monthly=c("UNRATE","U6RATE","LNS11300060","LNS12300060","RSXFS","INDPRO","DGORDER","AMDMVS","NEWORDER","ANXAVS","PCEC96","PCEDG","PCENDC96","PCESC96","ALTSALES","WHLSLRIRSA","UMCSENT","HOUST","COMPUTSA","PERMIT","TTLCONS","TLNRESCONS","TLRESCONS","TLPRVCONS","PNRESCONS","PRRESCONS","HSN1F","EXHOSLUSM495S","CSUSHPISA","AHETPI","CPIAUCSL","CPILFESL","PCEPI","PCEPILFE","GEPUCURRENT","RPI","DSPIC96","PSAVERT","W875RX1","JTSJOL",
+monthly=c("UNRATE","U6RATE","LNS11300060","LNS12300060","RSXFS","INDPRO","DGORDER","AMDMVS","NEWORDER","ANXAVS",
+          "PCEC96","PCEDGC96","PCENDC96","PCESC96",
+          "ALTSALES","WHLSLRIRSA","UMCSENT","HOUST","COMPUTSA","PERMIT","TTLCONS","TLNRESCONS","TLRESCONS","TLPRVCONS","PNRESCONS","PRRESCONS","HSN1F","EXHOSLUSM495S","CSUSHPISA","AHETPI","CPIAUCSL","CPILFESL","PCEPI","PCEPILFE","GEPUCURRENT","RPI","DSPIC96","PSAVERT","W875RX1","JTSJOL",
           "RSAOMV",
           "MRTSSM4413USS",
           "RSFHFS",
@@ -150,8 +152,8 @@ fred=rename(fred,c("Unemployment Insurance - Initial Claims"="ICSA",
                    "Lightweight Vehicle Sales"="ALTSALES",
                    "Real PCE (Services)"="PCESC96",
                    "Real PCE (Nondurables)"="PCENDC96",
-                   "Real PCE (Durables)"="PCEDG",
-                   "Real PCE (OVerall)"="PCEC96",
+                   "Real PCE (Durables)"="PCEDGC96",
+                   "Real PCE (Overall)"="PCEC96",
                    "Capital Goods - Shipments (Nondefense, ex. aircraft)"="ANXAVS",
                    "Capital Goods - New Orders (Nondefense, ex. aircraft)"="NEWORDER",
                    "Durable Goods - Shipments"="AMDMVS",
@@ -206,7 +208,7 @@ fred$date=as.Date(fred$date)
 
 #Zillow Housing Prices : https://www.zillow.com/research/data/; download from this site and save as zvhi_monthyear.csv
 
-zillow=read.csv("zhvi_dec2020.csv",stringsAsFactors = F)
+zillow=read.csv("zhvi_sept2021.csv",stringsAsFactors = F)
 zillow=subset(zillow,SizeRank<=35)
 zillow=subset(zillow,select=-c(RegionID,RegionType,StateName,SizeRank))
 zillow.long=reshape2::melt(zillow,id.vars=c("RegionName"))

@@ -83,7 +83,7 @@ sandbox.UI <- function(id) {
                                                                            "Real PCE (Services)",
                                                                            "Real PCE (Nondurables)",
                                                                            "Real PCE (Durables)",
-                                                                           "Real PCE"="PCEC96"
+                                                                           "Real PCE (Overall)"
                    ),
                                                             "Retail Sales (Granular - M)"=c(
                                                               "Retail Spending - Auto",

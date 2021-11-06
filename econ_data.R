@@ -212,7 +212,7 @@ fred$date=as.Date(fred$date)
 
 #Zillow Housing Prices : https://www.zillow.com/research/data/; download from this site and save as zvhi_monthyear.csv
 
-zillow=read.csv("zhvi_sept2021.csv",stringsAsFactors = F)
+zillow=read.csv("zhvi_oct2021.csv",stringsAsFactors = F)
 zillow=subset(zillow,SizeRank<=35)
 zillow=subset(zillow,select=-c(RegionID,RegionType,StateName,SizeRank))
 zillow.long=reshape2::melt(zillow,id.vars=c("RegionName"))
@@ -222,52 +222,52 @@ colnames(zillow.main)[1]="date"
 zillow.main$date=as.Date(as.yearmon(zillow.main$date))
 
 fred=merge(fred,zillow.main,all.x = TRUE,by="date")
-
-#financial data 
-
-Quandl.api_key("gR-_BnyE26mNqNkNAWvy")
-
-t_yields = Quandl("USTREASURY/YIELD", type="raw",collapse="daily")
-
-#stocks = Quandl.datatable('SHARADAR/SEP', date='2018-12-31,2018-12-28,2018-12-27', ticker='XOM,WMT')
-
-library(Riex)
-sk <- "sk_6aba1419eea9404a8049da7e5de57134"
-x = c("TSLA","GOOGL","FB","AMZN","AI","QS","SFIX","BBWI","F","DG","NVDA")
-r = "2y"
-
-stocks = list()
-
-for (i in 1:length(x)){
-
-stocks[[i]] = as.data.frame(iex.chart(x[i], "1y", sk))
-stocks[[i]][,"ticker"] = x[i]
-stocks[[i]][,"date"] = row.names(stocks[[i]])
-  
-}
-
-stocks_all = bind_rows(stocks, .id = "column_label")
-
-cryptos = tolower(c("BTCUSD","ETHUSD","usdtusd","ADAUSD","XRPUSD","BCHUSD"))
-crypto_names = c("Bitcoin","Ethereum","Tether","Cardano","XRP","Bitcoin Cash")
-
-crypto = list()
-
-for (i in 1:length(cryptos)){
-  
-  # crypto[[i]] = as.data.frame(crypto(cryptos[i], sk))
-  # crypto[[i]][,"currency"] = crypto_names[i]
-  # crypto[[i]][,"date"] = row.names(crypto[[i]])
-  
-  crypto[[i]] = get_ohlc(cryptos[i], periods = 86400, before = "2021-10-09",
-                                       after = "2021-01-01", datetime = TRUE)
-  crypto[[i]][,"currency"] = crypto_names[i]
-  crypto[[i]][,"date"] = crypto[[i]][,"CloseTime"]
-  
-}
-
-crypto_all = bind_rows(crypto, .id = "column_label")
-
-
-
-
+# 
+# #financial data 
+# 
+# Quandl.api_key("gR-_BnyE26mNqNkNAWvy")
+# 
+# t_yields = Quandl("USTREASURY/YIELD", type="raw",collapse="daily")
+# 
+# #stocks = Quandl.datatable('SHARADAR/SEP', date='2018-12-31,2018-12-28,2018-12-27', ticker='XOM,WMT')
+# 
+# library(Riex)
+# sk <- "sk_6aba1419eea9404a8049da7e5de57134"
+# x = c("TSLA","GOOGL","FB","AMZN","AI","QS","SFIX","BBWI","F","DG","NVDA")
+# r = "2y"
+# 
+# stocks = list()
+# 
+# for (i in 1:length(x)){
+# 
+# stocks[[i]] = as.data.frame(iex.chart(x[i], "1y", sk))
+# stocks[[i]][,"ticker"] = x[i]
+# stocks[[i]][,"date"] = row.names(stocks[[i]])
+#   
+# }
+# 
+# stocks_all = bind_rows(stocks, .id = "column_label")
+# 
+# cryptos = tolower(c("BTCUSD","ETHUSD","usdtusd","ADAUSD","XRPUSD","BCHUSD"))
+# crypto_names = c("Bitcoin","Ethereum","Tether","Cardano","XRP","Bitcoin Cash")
+# 
+# crypto = list()
+# 
+# for (i in 1:length(cryptos)){
+#   
+#   # crypto[[i]] = as.data.frame(crypto(cryptos[i], sk))
+#   # crypto[[i]][,"currency"] = crypto_names[i]
+#   # crypto[[i]][,"date"] = row.names(crypto[[i]])
+#   
+#   crypto[[i]] = get_ohlc(cryptos[i], periods = 86400, before = "2021-10-09",
+#                                        after = "2021-01-01", datetime = TRUE)
+#   crypto[[i]][,"currency"] = crypto_names[i]
+#   crypto[[i]][,"date"] = crypto[[i]][,"CloseTime"]
+#   
+# }
+# 
+# crypto_all = bind_rows(crypto, .id = "column_label")
+# 
+# 
+# 
+# 

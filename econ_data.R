@@ -222,52 +222,109 @@ colnames(zillow.main)[1]="date"
 zillow.main$date=as.Date(as.yearmon(zillow.main$date))
 
 fred=merge(fred,zillow.main,all.x = TRUE,by="date")
-# 
-# #financial data 
-# 
-# Quandl.api_key("gR-_BnyE26mNqNkNAWvy")
-# 
-# t_yields = Quandl("USTREASURY/YIELD", type="raw",collapse="daily")
-# 
-# #stocks = Quandl.datatable('SHARADAR/SEP', date='2018-12-31,2018-12-28,2018-12-27', ticker='XOM,WMT')
-# 
-# library(Riex)
-# sk <- "sk_6aba1419eea9404a8049da7e5de57134"
-# x = c("TSLA","GOOGL","FB","AMZN","AI","QS","SFIX","BBWI","F","DG","NVDA")
-# r = "2y"
-# 
-# stocks = list()
-# 
-# for (i in 1:length(x)){
-# 
-# stocks[[i]] = as.data.frame(iex.chart(x[i], "1y", sk))
-# stocks[[i]][,"ticker"] = x[i]
-# stocks[[i]][,"date"] = row.names(stocks[[i]])
-#   
-# }
-# 
-# stocks_all = bind_rows(stocks, .id = "column_label")
-# 
-# cryptos = tolower(c("BTCUSD","ETHUSD","usdtusd","ADAUSD","XRPUSD","BCHUSD"))
-# crypto_names = c("Bitcoin","Ethereum","Tether","Cardano","XRP","Bitcoin Cash")
-# 
-# crypto = list()
-# 
-# for (i in 1:length(cryptos)){
-#   
-#   # crypto[[i]] = as.data.frame(crypto(cryptos[i], sk))
-#   # crypto[[i]][,"currency"] = crypto_names[i]
-#   # crypto[[i]][,"date"] = row.names(crypto[[i]])
-#   
-#   crypto[[i]] = get_ohlc(cryptos[i], periods = 86400, before = "2021-10-09",
-#                                        after = "2021-01-01", datetime = TRUE)
-#   crypto[[i]][,"currency"] = crypto_names[i]
-#   crypto[[i]][,"date"] = crypto[[i]][,"CloseTime"]
-#   
-# }
-# 
-# crypto_all = bind_rows(crypto, .id = "column_label")
-# 
-# 
-# 
-# 
+
+#financial data
+
+Quandl.api_key("gR-_BnyE26mNqNkNAWvy")
+
+t_yields = Quandl("USTREASURY/YIELD", type="raw",collapse="daily")
+colnames(t_yields)[1] = "date"
+
+#stocks = Quandl.datatable('SHARADAR/SEP', date='2018-12-31,2018-12-28,2018-12-27', ticker='XOM,WMT')
+
+#Use IEX Cloud to pull stock data
+
+stock_files = arrange(file.info(grep("stocks",list.files(),value=T)),ctime)
+stock_file = row.names(tail(stock_files,1))
+#stock_file = "historical_stk_prices.csv"
+stocks_all_static = read.csv(stock_file,stringsAsFactors = F)
+stocks_all_static$date = as.Date(stocks_all_static$date)
+
+gap = as.numeric(Sys.Date() - max(stocks_all_static$date,na.rm=T))
+
+library(Riex)
+sk <- "pk_55a180a722fd47fb8e7fb6aa1353fe01"
+x = c("SPY","QQQE","HFXI","VEU","TSLA","GOOGL","FB","AMZN","CRM","MSFT","Z","W","WMT","CAKE","UBER","SNOW","SHOP","CSX","COF","CVS","TGT","PG","DDOG","NET","DOCU","DIS","PARA","UPS","FDX","AI","QS","SFIX","BBWI","F","DG","NVDA")
+
+#pull data from API to append to static historical pull
+
+do_not_pull = FALSE
+
+if(30>=gap & gap > 5){
+  r = "1m"
+} else if (90>=gap & gap > 30){
+  r = "3m"
+} else if (180>=gap & gap > 90){
+  r = "6m"
+} else if (365>=gap & gap > 180){
+  r = "1y"
+} else {
+  r = NULL
+  do_not_pull = TRUE
+}
+
+
+if(do_not_pull==FALSE){
+stocks = list()
+
+for (i in 1:length(x)){
+
+stocks[[i]] = as.data.frame(iex.chart(x[i], r, sk))
+stocks[[i]][,"ticker"] = x[i]
+stocks[[i]][,"date"] = row.names(stocks[[i]])
+
+ }
+
+stocks_all = bind_rows(stocks, .id = "column_label")
+stocks_all$date = as.Date(stocks_all$date)
+
+#stocks_all_total = rbind(stocks_all,stocks_all_static[,-1])
+stocks_all_total = full_join(stocks_all[,-1],stocks_all_static[,-c(1,2)])
+stocks_all_total$date = as.Date(stocks_all_total$date)
+stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker","Close")]),]
+stocks_all_total = subset(stocks_all_total,!is.na(date))
+
+write.csv(stocks_all_total,paste0(paste0("stocks_data_",Sys.Date()),".csv"))
+} else if (do_not_pull==TRUE){
+  stocks_all_total = stocks_all_static
+  stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker","Close")]),]
+  stocks_all_total$date = as.Date(stocks_all_total$date)
+  stocks_all_total = subset(stocks_all_total,!is.na(date))
+}
+
+
+
+stocks_all_w = spread(stocks_all_total[,c("date","ticker","Close")], ticker, Close)
+stocks_all_w$date = as.Date(stocks_all_w$date)
+
+#use cryptowatchR package to get crypto prices
+cryptos = tolower(c("BTCUSD","ETHUSD","usdtusd","ADAUSD","XRPUSD","SOLUSD","BCHUSD","MATICUSD","DOGEUSD"))
+crypto_names = c("Bitcoin","Ethereum","Tether","Cardano","XRP","Solana","Bitcoin Cash","Polygon","Doge Coin")
+
+crypto = list()
+
+for (i in 1:length(cryptos)){
+
+  # crypto[[i]] = as.data.frame(crypto(cryptos[i], sk))
+  # crypto[[i]][,"currency"] = crypto_names[i]
+  # crypto[[i]][,"date"] = row.names(crypto[[i]])
+
+  crypto[[i]] = get_ohlc(cryptos[i], periods = 86400, before = Sys.Date(),
+                                       after = "2017-01-01", datetime = TRUE)
+  crypto[[i]][,"currency"] = crypto_names[i]
+  crypto[[i]][,"date"] = crypto[[i]][,"CloseTime"]
+
+}
+
+crypto_all = bind_rows(crypto, .id = "column_label")
+crypto_all_w = spread(crypto_all[,c("date","currency","ClosePrice")], currency, ClosePrice)
+crypto_all_w$date = as.Date(crypto_all_w$date)
+
+write.csv(crypto_all_w,'crypto_all_w.csv')
+
+all_prices = merge(stocks_all_w,crypto_all_w,by="date",all.x=T)
+all_prices = merge(all_prices,t_yields,by="date",all.x=T)
+
+
+
+

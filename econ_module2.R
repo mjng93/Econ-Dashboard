@@ -28,7 +28,7 @@ sandbox2.UI <- function(id) {
   
   ns <- NS(id)
   
-  tabPanel("Economic Data",
+  tabPanel("Interactive",
            #customHeader(title = "Data 'Sandbox' Manipulator"),
            column(12,
                   sidebarLayout(
@@ -40,129 +40,26 @@ sandbox2.UI <- function(id) {
 
                                  selectInput(ns("ystat"),
                                              label = "Select statistic:",
-                                             choices = list("GDP (Q)"=c(
-                                                                    "Real GDP",
-                                                                    "Real GDP Per Capita",
-                                                                    "PCE",
-                                                                    "Real Gross Investment",
-                                                                    "Nonresidential Fixed Investment",
-                                                                    "Net Exports",
-                                                                    "Government Expenditures and Gross Investment",
-                                                                    "Government Expenditures and Gross Investment - Federal Ex. Defense"),
-                                                            "Productivity (Q)"=c(
-                                                                    "Real Labor Productivity",
-                                                                    "Real Labor Productivity - Manufacturing",
-                                                                    "Real Labor Productivity - Business"),
-                                                            "Other Quarterly Data"=c("Retail Sales - E-commerce",
-                                                                    "E-commerce Share of Retail",
-                                                                    "Household Debt Service Ratio"),
-                                                            "Employment (M & W)"=c("Employment Population Ratio (Age 25-54)",
-                                                                              "Labor Force Participation Rate (Age 25-54)",
-                                                                              "Unemployment Rate (U-6)",
-                                                                              "Unemployment Rate (U-3)",
-                                                                              "Job Openings",
-                                                                              "Average Hourly Earnings (Production and Non-Supervisory Workers)",
-                                                                              "Unemployment Insurance - Initial Claims",
-                                                                              "Unemployment Insurance - Continued Claims"
-                                                                           
-                                                                            ),
-                                                            "Inflation (M)"=c( "Core PCE Price Index",
-                                                                           "PCE Price Index",
-                                                                           "Core CPI Price Index",
-                                                                           "CPI Price Index"),
-                                                            "Production & Industry (M)"=c( "Capital Goods - Shipments (Nondefense, ex. aircraft)",
-                                                                                       "Capital Goods - New Orders (Nondefense, ex. aircraft)",
-                                                                                       "Durable Goods - Shipments",
-                                                                                       "Durable Goods - New Orders",
-                                                                                       "Industrial Production"
-                                                                                       ),
-                                                            "Consumption (M)"=c("Consumer Sentiment (UM)",
-                                                                            "Retail Sales (ex. Food Services)",
-                                                                           "Wholesale Inventory/Sales Ratio",
-                                                                           "Lightweight Vehicle Sales",
-                                                                           "Real PCE (Services)",
-                                                                           "Real PCE (Nondurables)",
-                                                                           "Real PCE (Durables)",
-                                                                           "Real PCE (Overall)"
-                   ),
-                                                            "Retail Sales (Granular - M)"=c(
-                                                              "Retail Spending - Auto",
-                                                              "Retail Spending - Auto Parts",
-                                                              "Retail Spending - Furniture and Home Furnishings",
-                                                              "Retail Spending - Electronics & Appliances",
-                                                              "Retail Spending - Building Materials & Garden",
-                                                              "Retail Spending - Food and Beverage Stores",
-                                                              "Retail Spending - Groceries",
-                                                              "Retail Spending - Alcohol",
-                                                              "Retail Spending - Health & Personal Care",
-                                                              "Retail Spending - Gasoline",
-                                                              "Retail Spending - Clothing",
-                                                              "Retail Spending - Men's Clothing",
-                                                              "Retail Spending - Women's Clothing",
-                                                              "Retail Spending - Family Clothing",
-                                                              "Retail Spending - Shoes",
-                                                              "Retail Spending -  Sporting goods, hobby, musical
- instrument, & book stores",
-                                                              "Retail Spending - Department Stores",
-                                                              "Retail Spending - General Merchanise",
-                                                              "Retail Spending - Misc. Retailers",
-                                                              "Retail Spending - Nonstore Retailers",
-                                                              "Retail Spending - Food Services & Drinking Places"
-                                                            ),
-                   
-                                                            "Income & Debt (Q)"=c("Mortgage Delinquency",
-                                                                           "Credit Card Delinquency",
-                                                                           "Consumer Loans Delinquency",
-                                                                           "C&I Loans Delinquency",
-                                                                           "Savings Rate",
-                                                                           "Real Disposable Income",
-                                                                           "Real Personal Income",
-                                                                           "Real Personal Income (Ex. Transfers)"),
-                                                            "Commercial Bank Assets (H8)"=c("All Commercial Banks - Treasury and Agency Securities",
-                                                                                            "All Commercial Banks - Other Securities",
-                                                                                            "All Commercial Banks - C&I Loans",
-                                                                                            "All Commercial Banks - Real Estate Loans",
-                                                                                            "All Commercial Banks - Consumer Loans",
-                                                                                            "All Commercial Banks - Allother Loans and Leases",
-                                                                                            "All Commercial Banks - Cash Assets",
-                                                                                            "All Commercial Banks - Loans to Commercial Banks",
-                                                                                            "All Commercial Banks - Fed Funds Sold and reverse RPs",
-                                                                                            "All Commercial Banks - Other Assets (including trading)"),
-                   
-                                                            "Housing (Q & M)"=c("Rental Vacancy Rate",
-                                                                        "Home Vacancy Rate",
-                                                                        "Home Ownership Rate",
-                                                                        "S&P500/Case-Shiller Home Price Index",
-                                                                        "Existing Home Sales",
-                                                                        "New Home Sales",
-                                                                        "Private Construction Spending (Residential)",
-                                                                        "Private Construction Spending (Non-Residential)",
-                                                                        "Private Construction Spending",
-                                                                        "Construction Spending (Residential)",
-                                                                        "Construction Spending (Non-Residential)",
-                                                                        "Construction Spending",
-                                                                        "Building Permits",
-                                                                        "Housing Completions",
-                                                                        "Housing Starts"),
-                                                            "Other (W)"=c("NY Fed Weekly Economic Indicator",
-                                                                          "STL Fed Financial Stress Index"),
-                                                            "Zillow Home Value Index"=c(colnames(zillow.main)[-1])
-                                                            ),
-                                             selected = c("Real PCE"),
+                                             choices = list("Stock Prices"=c(colnames(stocks_all_w)[-1]),
+                                                            "Crypto" = c(colnames(crypto_all_w[,-1])),
+                                                            "Treasuries" = c(colnames(t_yields[,-1]))),
+                                                                    
+                                                            
+                                             selected = c("AMZN","Bitcoin"),
                                              multiple = TRUE
                                  ),
                                  radioButtons(ns("radio"),
                                               label = "Select Data Transformation", 
-                                              choices = c("Levels" = "levels","Change"="diff","Percent Change"="single.pct","Percent Change YoY" = "yoy","Z-score"="z","Date Index"="index","Annualized Growth"="annual","Rolling Average YoY Changes (12-month)"="ra.yoy"), #"Percent Change (10-day)" = "mom"
+                                              choices = c("Levels" = "levels","Change"="diff","Percent Change"="single.pct","Percent Change YoY" = "yoy","Z-score"="z","Date Index"="index","Annualized Growth"="annual","Rolling Average YoY Changes (12-month)"="ra.yoy","YTD"="ytd"), #"Percent Change (10-day)" = "mom"
                                               selected = "levels"),
                                  
                                  dateRangeInput(ns('dateRange'),
                                                 label = 'Select Date Range',
-                                                start = "1980-01-01", end = max(fred$date,na.rm=T)
+                                                start = "2017-01-01", end = max(stocks_all_w$date,na.rm=T)
                                  ),
                              
                                  
-                                 downloadButton(ns("EconData"), label = "Download Data")
+                                 downloadButton(ns("FinData"), label = "Download Data")
                                  
                     ),
                     
@@ -221,7 +118,7 @@ sandbox.server2 <- function(input, output, session,data){
       module_data.yoy=module_data.yoy[,c("date",input$ystat)]
       module_data.yoy=na.omit(module_data.yoy)
       
-      module_data.freq=module_data[module_data$date>="2018-01-01" & module_data$date<="2018-12-31",]
+      module_data.freq=module_data[module_data$date>="2020-01-01" & module_data$date<="2020-12-31",]
       module_data.freq=module_data.freq[,c("date",input$ystat)]
       module_data.freq=na.omit(module_data.freq)
       freq=length(unique(module_data.freq$date))
@@ -241,7 +138,7 @@ sandbox.server2 <- function(input, output, session,data){
       module_data.ra.yoy=module_data.ra.yoy[,c("date",input$ystat)]
       module_data.ra.yoy=na.omit(module_data.ra.yoy)
       
-      module_data.freq=module_data[module_data$date>="2018-01-01" & module_data$date<="2018-12-31",]
+      module_data.freq=module_data[module_data$date>="2020-01-01" & module_data$date<="2020-12-31",]
       module_data.freq=module_data.freq[,c("date",input$ystat)]
       module_data.freq=na.omit(module_data.freq)
       freq=length(unique(module_data.freq$date))
@@ -293,8 +190,24 @@ sandbox.server2 <- function(input, output, session,data){
     
     if (input$radio=="index"){
       module_data.index=module_data[module_data$date>=input$dateRange[1] & module_data$date<=input$dateRange[2],]
+      
+      min = min(module_data.index$date,na.rm=T)
+      
       for (i in 2:ncol(module_data.index)){
-        module_data.index[,i]=(module_data.index[,i])/module_data.index[module_data.index$date==input$dateRange[1],i]
+        module_data.index[,i]=(module_data.index[,i])/module_data.index[module_data.index$date==min,i]
+      }
+      df <- melt(module_data.index,id.vars='date')
+      df <- df[df$variable %in% input$ystat,]
+      units="Index"
+    }
+    
+    if (input$radio=="ytd"){
+      module_data.index=module_data[module_data$date>=input$dateRange[1] & module_data$date<=input$dateRange[2],]
+      
+      #min = min(module_data.index$date,na.rm=T)
+      
+      for (i in 2:ncol(module_data.index)){
+        module_data.index[,i]=(module_data.index[,i])/module_data.index[module_data.index$date=="2021-01-02",i]
       }
       df <- melt(module_data.index,id.vars='date')
       df <- df[df$variable %in% input$ystat,]
@@ -306,7 +219,7 @@ sandbox.server2 <- function(input, output, session,data){
       module_data.annual=module_data.annual[,c("date",input$ystat)]
       module_data.annual=na.omit(module_data.annual)
       
-      module_data.freq=module_data[module_data$date>="2018-01-01" & module_data$date<="2018-12-31",]
+      module_data.freq=module_data[module_data$date>="2020-01-01" & module_data$date<="2020-12-31",]
       module_data.freq=module_data.freq[,c("date",input$ystat)]
       module_data.freq=na.omit(module_data.freq)
       freq=length(unique(module_data.freq$date))
@@ -342,20 +255,35 @@ sandbox.server2 <- function(input, output, session,data){
   output$plot <- renderPlotly({
     
     plot.data=data_input()
+    print(tail(plot.data))
     plot.data=na.omit(plot.data)
     
     if (input$chart_type=="line"){
-      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines') %>%
-        layout(title = "Economic Data",
-               xaxis = list(title = "Date"),
-               yaxis = list (title = unit_input()))
+      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines', colors = rainbow(length(unique(plot.data$variable)))) %>%
+        layout(title = "Financial Data",
+               titlefont = list(color="white"),
+               legend = list(font = list(
+                 color='white')
+               ),
+               xaxis = list(title = "Date",color='white'),
+               yaxis = list (title = unit_input(),color='white'),
+               paper_bgcolor='black',
+               plot_bgcolor = 'black'
+               )
     }
     
     else if (input$chart_type=="bar"){
-      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'bar') %>%
-        layout(title = "Economic Data",
-               xaxis = list(title = "Date"),
-               yaxis = list (title = unit_input()))
+      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'bar', colors = rainbow(length(unique(plot.data$variable)))) %>%
+        layout(title = "Financial Data",
+               titlefont = list(color="white"),
+               legend = list(font = list(
+                    color='white')
+                    ),
+               xaxis = list(title = "Date",color='white'),
+               yaxis = list (title = unit_input(),color='white'),
+               paper_bgcolor='black',
+               plot_bgcolor = 'black'
+        )
     }
     
     #,text = paste('Value:', value,'<br>Date: ', as.Date(date,format='%b-%Y'),  '<br>Variable: ', variable)
@@ -411,7 +339,7 @@ sandbox.server2 <- function(input, output, session,data){
   
   output$EconData <- downloadHandler(
     filename = function() {
-      paste('econ_data', 'csv', sep='.')
+      paste('financial_data', 'csv', sep='.')
     },
     content = function(file) {
       

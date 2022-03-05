@@ -148,7 +148,7 @@ sandbox.UI <- function(id) {
                                                                           "STL Fed Financial Stress Index"),
                                                             "Zillow Home Value Index"=c(colnames(zillow.main)[-1])
                                                             ),
-                                             selected = c("Real PCE"),
+                                             selected = c("Real PCE (Overall)"),
                                              multiple = TRUE
                                  ),
                                  radioButtons(ns("radio"),
@@ -347,15 +347,29 @@ sandbox.server <- function(input, output, session,data){
     if (input$chart_type=="line"){
       plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines') %>%
         layout(title = "Economic Data",
-               xaxis = list(title = "Date"),
-               yaxis = list (title = unit_input()))
+               titlefont = list(color="white"),
+               legend = list(font = list(
+                 color='white')
+               ),
+               xaxis = list(title = "Date",color='white'),
+               yaxis = list (title = unit_input(),color='white'),
+               paper_bgcolor='black',
+               plot_bgcolor = 'black'
+        )
     }
     
     else if (input$chart_type=="bar"){
       plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'bar') %>%
         layout(title = "Economic Data",
-               xaxis = list(title = "Date"),
-               yaxis = list (title = unit_input()))
+               titlefont = list(color="white"),
+               legend = list(font = list(
+                 color='white')
+               ),
+               xaxis = list(title = "Date",color='white'),
+               yaxis = list (title = unit_input(),color='white'),
+               paper_bgcolor='black',
+               plot_bgcolor = 'black'
+        )
     }
     
     #,text = paste('Value:', value,'<br>Date: ', as.Date(date,format='%b-%Y'),  '<br>Variable: ', variable)

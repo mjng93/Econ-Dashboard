@@ -8,7 +8,7 @@ library(shinythemes)
 library(shinydashboard)
 
 ui <- shinyUI(
-  fluidPage(theme=shinytheme('sandstone'),
+  fluidPage(theme=shinytheme('cyborg'),
             
             
            # tags$head(includeHTML("google_analytics_econ_biz.html")),
@@ -17,7 +17,7 @@ ui <- shinyUI(
                        navbarMenu("Interactive",
                                   sandbox.UI(id="sandbox")
                        ),
-                       navbarMenu("ASIN View",
+                       navbarMenu("Financial Data",
                                   sandbox2.UI(id="sandbox2")
                        )
             )
@@ -28,7 +28,7 @@ ui <- shinyUI(
 server <- function(input, output, session){
   
   callModule(sandbox.server,id="sandbox",data=fred)
-  callModule(sandbox.server2,id="sandbox2",data=fred)
+  callModule(sandbox.server2,id="sandbox2",data=all_prices)
   
 }
 

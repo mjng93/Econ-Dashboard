@@ -42,7 +42,17 @@ sandbox2.UI <- function(id) {
                                              label = "Select statistic:",
                                              choices = list("Stock Prices"=c(colnames(stocks_all_w)[-1]),
                                                             "Crypto" = c(colnames(crypto_all_w[,-1])),
-                                                            "Treasuries" = c(colnames(t_yields[,-1]))),
+                                                            "Yields" = c("30 YR",
+                                                                         "10 YR",
+                                                                         "5 YR",
+                                                                         "2 YR",
+                                                                         "1 YR",
+                                                                         "3 MO",
+                                                                         "AAA Corporate Yield",
+                                                                         "BBB Corporate Yield","HY Corporate Yield"),
+                                             "Other" = c("Five-Year, Five-Year Forward Rate",
+                                                         "Ten-Year Term Premium")
+                                             ),
                                                                     
                                                             
                                              selected = c("AMZN","Bitcoin"),
@@ -263,9 +273,9 @@ sandbox.server2 <- function(input, output, session,data){
         layout(title = "Financial Data",
                titlefont = list(color="white"),
                legend = list(font = list(
-                 color='white')
+                 color='white'),orientation="h"
                ),
-               xaxis = list(title = "Date",color='white'),
+               xaxis = list(title = "",color='white'),
                yaxis = list (title = unit_input(),color='white'),
                paper_bgcolor='black',
                plot_bgcolor = 'black'
@@ -277,9 +287,9 @@ sandbox.server2 <- function(input, output, session,data){
         layout(title = "Financial Data",
                titlefont = list(color="white"),
                legend = list(font = list(
-                    color='white')
+                    color='white'),orientation="h"
                     ),
-               xaxis = list(title = "Date",color='white'),
+               xaxis = list(title = "",color='white'),
                yaxis = list (title = unit_input(),color='white'),
                paper_bgcolor='black',
                plot_bgcolor = 'black'

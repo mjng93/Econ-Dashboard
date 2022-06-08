@@ -23,6 +23,7 @@ library(plotly)
 #library(ggthemes)
 #library(stargazer)
 library(data.table)
+library(ggsci)
 
 sandbox.UI <- function(id) {
   
@@ -69,7 +70,8 @@ sandbox.UI <- function(id) {
                                                             "Inflation (M)"=c( "Core PCE Price Index",
                                                                            "PCE Price Index",
                                                                            "Core CPI Price Index",
-                                                                           "CPI Price Index"),
+                                                                           "CPI Price Index",
+                                                                           "Inflation Expecatations: 1-year"),
                                                             "Production & Industry (M)"=c( "Capital Goods - Shipments (Nondefense, ex. aircraft)",
                                                                                        "Capital Goods - New Orders (Nondefense, ex. aircraft)",
                                                                                        "Durable Goods - Shipments",
@@ -143,7 +145,12 @@ sandbox.UI <- function(id) {
                                                                         "Construction Spending",
                                                                         "Building Permits",
                                                                         "Housing Completions",
-                                                                        "Housing Starts"),
+                                                                        "Housing Starts",
+                                                                        "Fixed Rate Mortgage: 30-year Avg.",
+                                                                        "Fixed Rate Mortgage: 15-year Avg.",
+                                                                        "Fixed Rate Jumbo Mortgage: 30-year Index",
+                                                                        "Fixed Rate Conforming Mortgage: 30-year Index",
+                                                                        "Fixed Rate FHA Mortgage: 30-year Index"),
                                                             "Other (W)"=c("NY Fed Weekly Economic Indicator",
                                                                           "STL Fed Financial Stress Index"),
                                                             "Zillow Home Value Index"=c(colnames(zillow.main)[-1])
@@ -345,31 +352,32 @@ sandbox.server <- function(input, output, session,data){
     plot.data=na.omit(plot.data)
     
     if (input$chart_type=="line"){
-      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines') %>%
+      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'scatter', mode = 'lines',colors =  rainbow(length(unique(plot.data$variable)))) %>%
         layout(title = "Economic Data",
                titlefont = list(color="white"),
                legend = list(font = list(
-                 color='white')
+                 color='white'),orientation='h'
                ),
-               xaxis = list(title = "Date",color='white'),
+               xaxis = list(title = "",color='white'),
                yaxis = list (title = unit_input(),color='white'),
                paper_bgcolor='black',
                plot_bgcolor = 'black'
-        )
+        ) 
     }
     
     else if (input$chart_type=="bar"){
-      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'bar') %>%
+      plot_ly(plot.data, x = ~date,y= ~value, color = ~variable, type = 'bar',colors= rainbow(length(unique(plot.data$variable)))) %>%
         layout(title = "Economic Data",
                titlefont = list(color="white"),
                legend = list(font = list(
-                 color='white')
+                 color='white'),orientation='h'
                ),
-               xaxis = list(title = "Date",color='white'),
+               xaxis = list(title = "",color='white'),
                yaxis = list (title = unit_input(),color='white'),
                paper_bgcolor='black',
-               plot_bgcolor = 'black'
-        )
+               plot_bgcolor = 'black',
+               colors = 'Set3'
+        ) 
     }
     
     #,text = paste('Value:', value,'<br>Date: ', as.Date(date,format='%b-%Y'),  '<br>Variable: ', variable)

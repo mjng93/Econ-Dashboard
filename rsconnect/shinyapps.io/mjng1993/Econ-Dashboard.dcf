@@ -5,10 +5,10 @@ account: mjng1993
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2792656
-bundleId: 5250549
+bundleId: 5987531
 url: https://mjng1993.shinyapps.io/Econ-Dashboard/
-when: 1636904451.82995
-lastSyncTime: 1636904451.82995
+when: 1654652748.79564
+lastSyncTime: 1654652748.79564
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: econ_app_mike.R|stocks_data_2021-11-06.csv|stocks_data_2021-11-07.csv|stocks_data1_2021-11-07.csv|stocks_data1_2021-11-13.csv|zhvi_dec2020.csv|zhvi_jan2020.csv|zhvi_june2020.csv|zhvi_nov2020.csv|zhvi_oct2020.csv|zhvi_sept2020.csv|zhvi_sept2021.csv
+ignoredFiles: econ_app_mike.R|stocks_data_2021-11-06.csv|stocks_data_2021-11-07.csv|stocks_data1_2021-11-07.csv|stocks_data1_2021-11-13.csv|stocks_data1_2021-11-14.csv|zhvi_dec2020.csv|zhvi_jan2020.csv|zhvi_jan2022.csv|zhvi_june2020.csv|zhvi_nov2020.csv|zhvi_oct2020.csv|zhvi_oct2021.csv|zhvi_sept2020.csv|zhvi_sept2021.csv

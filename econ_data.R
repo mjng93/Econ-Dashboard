@@ -27,6 +27,8 @@ library(Quandl)
 library(Riex)
 library(dplyr)
 library(cryptowatchR)
+library(httr)
+library(jsonlite)
 
 
 
@@ -239,11 +241,11 @@ fred$date=as.Date(fred$date)
 
 #Zillow Housing Prices : https://www.zillow.com/research/data/; download from this site and save as zvhi_monthyear.csv
 
-zillow=read.csv("zhvi_apr2022.csv",stringsAsFactors = F)
+zillow=read.csv("zhvi_may2023.csv",stringsAsFactors = F)
 zillow=subset(zillow,SizeRank<=35)
 zillow=subset(zillow,select=-c(RegionID,RegionType,StateName,SizeRank))
 zillow.long=reshape2::melt(zillow,id.vars=c("RegionName"))
-zillow.long$variable=as.Date(gsub("X","",zillow.long$variable,ignore.case = T),format="%m.%d.%Y")
+zillow.long$variable=as.Date(gsub("X","",zillow.long$variable,ignore.case = T),format="%Y.%m.%d")
 zillow.main=reshape2::dcast(zillow.long,variable~RegionName,value.var="value")
 colnames(zillow.main)[1]="date"
 zillow.main$date=as.Date(as.yearmon(zillow.main$date))
@@ -268,12 +270,14 @@ stock_file = row.names(tail(stock_files,1))
 #stock_file = "historical_stk_prices.csv"
 stocks_all_static = read.csv(stock_file,stringsAsFactors = F)
 stocks_all_static$date = as.Date(stocks_all_static$date)
+#row.names(stocks_all_static)=stocks_all_static$date
 
 gap = as.numeric(Sys.Date() - max(stocks_all_static$date,na.rm=T))
 
 library(Riex)
 sk <- "pk_55a180a722fd47fb8e7fb6aa1353fe01"
-x = c("SPY","QQQE","HFXI","VEU","TSLA","GOOGL","FB","AMZN","CRM","MSFT","Z","W","WMT","CAKE","UBER","SNOW","SHOP","CSX","COF","CVS","TGT","PG","DDOG","NET","DOCU","DIS","PARA","UPS","FDX","AI","QS","SFIX","BBWI","F","DG","NVDA","NFLX","AAPL","NDAQ","GD","NOC","DVN","OXY","COP","CVX","XOM")
+x = c("SPY","QQQE","HFXI","VEU","TSLA","GOOGL","META","AMZN","CRM","MSFT","Z","W","WMT","CAKE","UBER","SNOW","SHOP","CSX","COF","CVS","TGT","PG","DDOG","NET","DOCU","DIS","PARA","UPS","FDX","AI","QS","SFIX","BBWI","F","DG","NVDA","NFLX","AAPL","NDAQ","GD","NOC","DVN","OXY","COP","CVX","XOM","XLP","XHB","ITB","AMT","PLD")
+
 
 #pull data from API to append to static historical pull
 
@@ -296,35 +300,64 @@ if(30>=gap & gap > 5){
 if(do_not_pull==FALSE){
 stocks = list()
 
-for (i in 1:length(x)){
+if (length(x)>=30){x=x[1:30]}
 
-stocks[[i]] = as.data.frame(iex.chart(x[i], r, sk))
-stocks[[i]][,"ticker"] = x[i]
-stocks[[i]][,"date"] = row.names(stocks[[i]])
+for (i in 1:length(x)){
+  
+  #GET /stock/{symbol}/chart/{range}/{date}
+  query=paste0("/stock/",x[i],"/chart/",r)
+  query=paste0("https://cloud.iexapis.com/stable",query,"?token=",sk)
+  
+  stocks[[i]]<-httr::GET(url=query)
+  stocks[[i]] = fromJSON(httr::content(stocks[[i]],type="text"),flatten = T)
+  stocks[[i]] = stocks[[i]][,c("open","high","low","close","volume","symbol","date")]
+
+# stocks[[i]] = try(
+#   as.data.frame(iex.chart(x[i], r, sk)),
+#   silent=T)
+# 
+# if(is.null(ncol(stocks[[i]]))){
+# 
+#   stocks[[i]]=subset(stocks_all_static[stocks_all_static$ticker==x[i],],select=-c(ticker,date))
+# }
+# 
+# stocks[[i]][,"ticker"] = x[i]
+# stocks[[i]][,"date"] = row.names(stocks[[i]])
 
 print(paste0("Pulled data for: ",x[i]))
+print(i)
+
+if ( i %% 29==0){
+Sys.sleep(5) 
+}
 
  }
 
 stocks_all = bind_rows(stocks, .id = "column_label")
+stocks_all = stocks_all[!duplicated(stocks_all[,c("date","symbol")]),]
 stocks_all$date = as.Date(stocks_all$date)
+colnames(stocks_all) = c("column_label","Open","High","Low","Close","Volume","ticker","date")
 
 #stocks_all_total = rbind(stocks_all,stocks_all_static[,-1])
-stocks_all_total = full_join(stocks_all[,-1],stocks_all_static[,-c(1,2)])
+#stocks_all_total = full_join(stocks_all[,-1],stocks_all_static[,-c(1,2)])
+stocks_all_total = full_join(stocks_all[,-1],stocks_all_static[,-1])
 stocks_all_total$date = as.Date(stocks_all_total$date)
-stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker","Close")]),]
+stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker")]),]
 stocks_all_total = subset(stocks_all_total,!is.na(date))
+
+print("stocks data merged and updated")
 
 write.csv(stocks_all_total,paste0(paste0("stocks_data_",Sys.Date()),".csv"))
 } else if (do_not_pull==TRUE){
   stocks_all_total = stocks_all_static
-  stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker","Close")]),]
+  stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker")]),]
   stocks_all_total$date = as.Date(stocks_all_total$date)
   stocks_all_total = subset(stocks_all_total,!is.na(date))
 }
 
 
 
+stocks_all_total = stocks_all_total[!duplicated(stocks_all_total[,c("date","ticker","Close")]),]
 stocks_all_w = spread(stocks_all_total[,c("date","ticker","Close")], ticker, Close)
 stocks_all_w$date = as.Date(stocks_all_w$date)
 
@@ -352,6 +385,8 @@ crypto_all_w = spread(crypto_all[,c("date","currency","ClosePrice")], currency, 
 crypto_all_w$date = as.Date(crypto_all_w$date)
 
 write.csv(crypto_all_w,'crypto_all_w.csv')
+
+print("crypto data pulled")
 
 all_prices = merge(stocks_all_w,crypto_all_w,by="date",all.x=T)
 #all_prices = merge(all_prices,t_yields,by="date",all.x=T)

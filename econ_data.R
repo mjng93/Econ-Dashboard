@@ -327,7 +327,7 @@ for (i in 1:length(x)){
 print(paste0("Pulled data for: ",x[i]))
 print(i)
 
-if ( i %% 29==0){
+if ( i %% 19==0){
 Sys.sleep(5) 
 }
 
